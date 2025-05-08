@@ -1,0 +1,61 @@
+#!/bin/bash
+
+COMPILER="g++ -std=c++20"
+SEP=/
+
+DIR=$(dirname "${BASH_SOURCE[0]}")${SEP}..
+
+SYSTEM=${DIR}${SEP}src${SEP}system
+SYS_CHECKER_H=${SYSTEM}${SEP}checker.h
+STANDART_ALGO_H=..${SEP}algorithms${SEP}$1.h
+CHECKER_H=..${SEP}checkers${SEP}$1.h
+TESTS=${DIR}${SEP}src${SEP}tests${SEP}$1.txt
+
+TESTING_ALGO_H=$(realpath --relative-to="$SYSTEM" "$2")
+
+TRASH_DIR=${DIR}${SEP}trash
+ERROR="\033[1;31merror: \033[0m"
+
+if [[ ! -f ${TRASH_DIR} ]]
+then
+  mkdir -p $TRASH_DIR
+fi
+
+if [[ ! -f ${SYSTEM}${SEP}${STANDART_ALGO_H} ]]
+then
+  echo -e "${ERROR}not find standart algorithm"
+  exit 1
+fi
+
+if [[ ! -f ${SYSTEM}${SEP}${CHECKER_H} ]]
+then
+  echo -e "${ERROR}not find checker"
+  exit 1
+fi
+
+if [[ ! -f $TESTS ]]
+then
+  echo -e "${ERROR}not find tests"
+  exit 1
+fi
+
+if [[ ! -f ${SYSTEM}${SEP}${TESTING_ALGO_H} ]]
+then
+  echo -e "${ERROR}not find testing algorithm"
+  exit 1
+fi
+
+echo -e "\033[1;35mstart compiling\033[0m"
+$COMPILER -DNAMESPACE=standard -DALGORITHM=${STANDART_ALGO_H} -DCHECKER=${CHECKER_H} -E ${SYS_CHECKER_H} -o ${TRASH_DIR}${SEP}standard.ii
+$COMPILER -DNAMESPACE=test -DALGORITHM=${TESTING_ALGO_H} -DCHECKER=${CHECKER_H} -E ${SYS_CHECKER_H} -o ${TRASH_DIR}${SEP}test.ii
+echo -e "\033[0;32mpreprocesing done\033[0m"
+$COMPILER ${SYSTEM}${SEP}checker.cpp -o ${TRASH_DIR}${SEP}checker.out
+
+rm ${TRASH_DIR}${SEP}standard.ii
+rm ${TRASH_DIR}${SEP}test.ii
+
+echo -e "\033[0;32mcompiling done\033[0m"
+echo -e "\033[1;35mstart testing:\033[0m"
+.${SEP}${TRASH_DIR}${SEP}checker.out ${TESTS}
+
+
