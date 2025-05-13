@@ -10,6 +10,8 @@ SYS_CHECKER_H=${SYSTEM}${SEP}checker.h
 STANDART_ALGO_H=..${SEP}algorithms${SEP}$1.h
 CHECKER_H=..${SEP}checkers${SEP}$1.h
 TESTS=${DIR}${SEP}src${SEP}tests${SEP}$1.txt
+GENERATOR=${DIR}${SEP}bin${SEP}generator_tests
+TESTS_GEN=${DIR}${SEP}src${SEP}tests${SEP}$1.gen
 
 TESTING_ALGO_H=$(realpath --relative-to="$SYSTEM" "$2")
 
@@ -35,8 +37,21 @@ fi
 
 if [[ ! -f $TESTS ]]
 then
-  echo -e "${ERROR}not find tests"
-  exit 1
+  if [[ ! -f $TESTS_GEN ]]
+  then
+    echo -e "${ERROR}not find tests gen"
+    exit 1
+  fi
+
+  if [[ ! -f $GENERATOR ]]
+  then
+    echo -e "${ERROR}not find generator"
+    exit 1
+  fi
+
+
+  $GENERATOR $TESTS < $TESTS_GEN
+  echo -e "\033[0;32mtests generated\033[0m"
 fi
 
 if [[ ! -f ${SYSTEM}${SEP}${TESTING_ALGO_H} ]]
