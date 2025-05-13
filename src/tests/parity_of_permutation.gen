@@ -1,0 +1,4 @@
+1000
+count = randnum(1, 30)
+count
+permutation(count)

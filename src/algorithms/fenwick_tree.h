@@ -1,11 +1,11 @@
-void upd(auto& tree, int i, const auto& val) {
+void upd(auto& tree, size_t i, const auto& val) {
   while (i < tree.size()) {
     tree[i] += val;
     i += i & -i;
   }
 }
 
-auto query(auto& tree, int i) {
+auto query(auto& tree, size_t i) {
   auto res = tree[i];
   i -= i & -i;
   while (i > 0) {

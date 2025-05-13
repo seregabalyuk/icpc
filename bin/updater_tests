@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#!/bin/bash
+
+SEP=/
+
+DIR=$(dirname "${BASH_SOURCE[0]}")${SEP}..
+
+GENERATOR=${DIR}${SEP}bin${SEP}generator_tests
+TESTS_GEN=${DIR}${SEP}src${SEP}tests${SEP}$1.gen
+TESTS=${DIR}${SEP}src${SEP}tests${SEP}$1.txt
+
+ERROR="\033[1;31merror: \033[0m"
+
+if [[ ! -f $TESTS ]]
+then
+  echo -e "${ERROR}not find tests"
+  exit 1
+fi
+
+if [[ ! -f $TESTS_GEN ]]
+then
+  echo -e "${ERROR}not find tests gen"
+  exit 1
+fi
+
+if [[ ! -f $GENERATOR ]]
+then
+  echo -e "${ERROR}not find generator"
+  exit 1
+fi
+
+$GENERATOR $TESTS < $TESTS_GEN
+
+echo -e "\033[0;32mdone\033[0m"
+
+
