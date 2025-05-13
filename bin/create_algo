@@ -1,0 +1,46 @@
+#!/bin/bash
+
+COMPILER="g++ -std=c++20"
+SEP=/
+
+DIR=$(dirname "${BASH_SOURCE[0]}")${SEP}..
+
+SYSTEM=${DIR}${SEP}src${SEP}system
+SYS_MAIN_H=${SYSTEM}${SEP}main.cpp
+STANDART_ALGO_H=..${SEP}algorithms${SEP}$1.h
+CHECKER_H=..${SEP}checkers${SEP}$1.h
+TESTS=${DIR}${SEP}src${SEP}tests${SEP}$1.txt
+
+TRASH_DIR=${DIR}${SEP}trash
+ERROR="\033[1;31merror: \033[0m"
+
+if [[ ! -f ${TRASH_DIR} ]]
+then
+  mkdir -p $TRASH_DIR
+fi
+
+if [[ ! -f ${SYSTEM}${SEP}${STANDART_ALGO_H} ]]
+then
+  echo -e "${ERROR}not find standart algorithm"
+  exit 1
+fi
+
+if [[ ! -f ${SYSTEM}${SEP}${CHECKER_H} ]]
+then
+  echo -e "${ERROR}not find checker"
+  exit 1
+fi
+
+if [[ ! -f $TESTS ]]
+then
+  echo -e "${ERROR}not find tests"
+  exit 1
+fi
+
+
+$COMPILER -DALGORITHM=${STANDART_ALGO_H} -DCHECKER=${CHECKER_H} ${SYS_MAIN_H} -o ${TRASH_DIR}${SEP}main.out
+echo -e "\033[0;32mcompiling done\033[0m"
+echo -e "\033[1;35mstart testing:\033[0m"
+.${SEP}${TRASH_DIR}${SEP}main.out ${TESTS}
+
+

@@ -6,7 +6,9 @@
 
 int main(int args, char** argv) {
   ifstream fin(argv[1]);
-  while(fin) {
+  int q;
+  fin >> q;
+  while(q --) {
     stringstream ssstandart, sstest;
     auto pos = fin.tellg();
     standard::checker(fin, ssstandart);

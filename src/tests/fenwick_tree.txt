@@ -1,0 +1,6 @@
+1
+10 4
+upd 5 6
+upd 3 2
+query 4
+query 5
